@@ -22,7 +22,7 @@ var disqus_config;
  */
 Drupal.behaviors.disqus = {
   attach: function (context, settings) {
-    $('body').once('disqus', function() {
+    $('body').once('disqus').each(function() {
       // Load the Disqus comments.
       if (settings.disqus || false) {
         // Setup the global JavaScript variables for Disqus.

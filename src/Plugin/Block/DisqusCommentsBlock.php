@@ -7,7 +7,7 @@
 
 namespace Drupal\disqus\Plugin\Block;
 
-use Drupal\block\Annotation\Block;
+use Drupal\core\Block\Annotation\Block;
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -32,7 +32,7 @@ class DisqusCommentsBlock extends DisqusBaseBlock {
       '#tree' => TRUE,
     );
 
-    $form['disqus']['#description'] = t('This block will be used to display the comments from Disqus. You will first need to configure the disqus comment field for any <a href="!entity-help">entity sub-type </a> (for example, a <a href="!content-type">content type</a>).', array('!entity-help' => \Drupal::url('help.page', array('name' => 'entity')), '!content-type' => \Drupal::url('node.overview_types')));
+    $form['disqus']['#description'] = t('This block will be used to display the comments from Disqus. You will first need to configure the disqus comment field for any <a href="!entity-help">entity sub-type </a> (for example, a <a href="!content-type">content type</a>).', array('!entity-help' => \Drupal::url('help.page', array('name' => 'entity')), '!content-type' => \Drupal::url('entity.node_type.collection')));
 
     return $form;
   }
@@ -47,7 +47,7 @@ class DisqusCommentsBlock extends DisqusBaseBlock {
    * {@inheritdoc}
    */
   protected function getRequiredCacheContexts() {
-    return array('cache_context.url');
+    return array('url');
   }
 
   /**
@@ -77,7 +77,7 @@ class DisqusCommentsBlock extends DisqusBaseBlock {
                 '#cache' => array(
                   'bin' => 'render',
                   'keys' => array('disqus', 'disqus_comments', "{$entity->getEntityTypeId()}", $entity->id()),
-                  'tags' => array('content' => TRUE),
+                  'tags' => array('content',),
                 ),
               ),
             );

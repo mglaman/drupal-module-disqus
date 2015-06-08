@@ -7,7 +7,7 @@
 
 namespace Drupal\disqus\Plugin\Block;
 
-use Drupal\block\Annotation\Block;
+use Drupal\core\Block\Annotation\Block;
 use Drupal\Core\Annotation\Translation;
 
 /**
