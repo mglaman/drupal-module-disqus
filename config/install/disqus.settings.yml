@@ -3,6 +3,7 @@ behavior:
   disqus_localization: false
   disqus_inherit_login: false
   disqus_disable_mobile: false
+  disqus_track_newcomment_ga: false
 advanced:
   disqus_useraccesstoken: ''
   disqus_publickey: ''

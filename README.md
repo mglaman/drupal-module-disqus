@@ -39,6 +39,8 @@ Built-in Features
 
 > **Note:** Using this feature also requires the `public_key` or`secret_key`
 
+- Tracking new comments and replies via "Google Analytics" analytic service.
+
 ####Examples
 You can find the API reference here : http://disqus.com/api/docs/
 Any of these methods can be called by creating an instance of the Disqus API

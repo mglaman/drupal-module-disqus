@@ -20,6 +20,9 @@ disqus.settings:
         disqus_disable_mobile:
           type: boolean
           label: 'Disable mobile optimized version'
+        disqus_track_newcomment_ga:
+          type: boolean
+          label: 'Track new comments in Google Analytics'
     advanced:
       type: mapping
       label: 'Advanced'

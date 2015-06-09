@@ -7,3 +7,9 @@ disqus:
     - core/jquery
     - core/jquery.once
     - core/drupal
+ga:
+  version: 1.x
+  js:
+    js/disqus_ga.js: {}
+  dependencies:
+    - disqus/disqus

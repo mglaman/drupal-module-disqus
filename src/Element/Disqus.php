@@ -60,6 +60,14 @@ class Disqus extends RenderElement {
       $disqus += \Drupal::service('disqus.manager')->disqus_sso_disqus_settings();
     }
 
+    // Check if we want to track new comments in Google Analytics.
+    if (\Drupal::config('disqus.settings')->get('behavior.disqus_track_newcomment_ga')) {
+      // Add a callback when a new comment is posted.
+      $disqus['callbacks']['onNewComment'][] = 'Drupal.disqus.disqusTrackNewComment';
+      // Attach the js with the callback implementation.
+      $element['#attached']['library'][] = 'disqus/ga';
+    }
+
     /**
      * Pass callbacks on if needed. Callbacks array is two dimensional array
      * with callback type as key on first level and array of JS callbacks on the

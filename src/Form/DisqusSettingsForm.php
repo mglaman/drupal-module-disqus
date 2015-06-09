@@ -113,6 +113,12 @@ class DisqusSettingsForm extends ConfigFormBase {
       '#description' => t('When enabled, uses the <a href="http://docs.disqus.com/help/2/">disqus_disable_mobile</a> flag to tell Disqus service to never use the mobile optimized version of Disqus.'),
       '#default_value' => $disqus_config->get('behavior.disqus_disable_mobile'),
     );
+    $form['behavior']['disqus_track_newcomment_ga'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Track new comments in Google Analytics'),
+      '#description' => t('When enabled, sends tracking information to Google Analytics. This will work only if you have installed the <a href="https://www.drupal.org/project/google_analytics">google_analytics</a> module.'),
+      '#default_value' => $disqus_config->get('behavior.disqus_track_newcomment_ga'),
+    );
     // Advanced settings.
     $form['advanced'] = array(
       '#type' => 'details',
@@ -243,6 +249,7 @@ class DisqusSettingsForm extends ConfigFormBase {
       ->set('behavior.disqus_localization', $form_state->getValue('disqus_localization'))
       ->set('behavior.disqus_inherit_login', $form_state->getValue('disqus_inherit_login'))
       ->set('behavior.disqus_disable_mobile', $form_state->getValue('disqus_disable_mobile'))
+      ->set('behavior.disqus_track_newcomment_ga', $form_state->getValue('disqus_track_newcomment_ga'))
       ->set('advanced.disqus_useraccesstoken', $form_state->getValue('disqus_useraccesstoken'))
       ->set('advanced.disqus_publickey', $form_state->getValue('disqus_publickey'))
       ->set('advanced.disqus_secretkey', $form_state->getValue('disqus_secretkey'))
