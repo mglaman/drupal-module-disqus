@@ -10,8 +10,9 @@ namespace Drupal\disqus\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandler;
-use Drupal\file\FileUsage\DatabaseFileUsageBackend;
+use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\file\FileUsage\FileUsageInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 class DisqusSettingsForm extends ConfigFormBase {
@@ -19,29 +20,41 @@ class DisqusSettingsForm extends ConfigFormBase {
   /**
    * The module handler.
    *
-   * @var \Drupal\Core\Extension\ModuleHandler
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
 
   /**
    * A database backend file usage overridable.
    *
-   * @var \Drupal\file\FileUsage\DatabaseFileUsageBackend
+   * @var \Drupal\file\FileUsage\FileUsageInterface
    */
   protected $fileUsage;
+
+  /**
+   * The entity manager.
+   *
+   * @var \Drupal\Core\Entity\EntityManagerInterface
+   */
+  protected $entityManager;
 
   /**
    * Constructs a \Drupal\disqus\DisqusSettingsForm object.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The factory for configuration objects.
-   * @param \Drupal\Core\Extension\ModuleHandler $module_handler
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\file\FileUsage\FileUsageInterface
+   *   The file usage overridable.
+   * @param \Drupal\Core\Entity\EntityManagerInterface
+   *   The entity manager.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandler $module_handler, DataBaseFileUsageBackend $file_usage) {
+  public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, FileUsageInterface $file_usage, EntityManagerInterface $entity_manager) {
     parent::__construct($config_factory);
     $this->moduleHandler = $module_handler;
     $this->fileUsage = $file_usage;
+    $this->entityManager = $entity_manager;
   }
 
   /**
@@ -51,7 +64,8 @@ class DisqusSettingsForm extends ConfigFormBase {
     return new static(
       $container->get('config.factory'),
       $container->get('module_handler'),
-      $container->get('file.usage')
+      $container->get('file.usage'),
+      $container->get('entity.manager')
     );
   }
 
@@ -272,12 +286,12 @@ class DisqusSettingsForm extends ConfigFormBase {
     if ($new_logo != $old_logo) {
       // Remove the old file and usage if previously set.
       if (!empty($old_logo)) {
-        $file = file_load($old_logo);
+        $file = $this->entityManager->getStorage('file')->load($old_logo);
         $this->fileUsage->delete($file, 'disqus', 'disqus');
       }
       // Update the new file and usage.
       if (!empty($new_logo)) {
-        $file = file_load($new_logo);
+        $file = $this->entityManager->getStorage('file')->load($new_logo);
         $this->fileUsage->add($file, 'disqus', 'disqus', 1);
       }
     }
