@@ -80,12 +80,11 @@ class DisqusFormatter extends FormatterBase implements ContainerFactoryPluginInt
 
     if($items->status == 1 && $this->currentUser->hasPermission('view disqus comments')) {
       $element[] = array(
-        '#type' => 'disqus',
-        '#post_render_cache' => array(
-          '\Drupal\disqus\Element\Disqus::disqus_element_post_render_cache' => array(
-            array('entity' => $items->getEntity()),
-          ),
-        ),
+        '#lazy_builder' => ['\Drupal\disqus\Element\Disqus::disqus_element_post_render_cache', [
+          $items->getEntity()->getEntityTypeId(),
+          $items->getEntity()->id(),
+        ]],
+        '#create_placeholder' => TRUE,
       );
     }
     return $element;

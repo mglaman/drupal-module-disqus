@@ -68,12 +68,11 @@ class DisqusCommentsBlock extends DisqusBaseBlock {
           if ($entity->get(key($field))->status) {
             return array(
               'disqus' => array(
-                '#type' => 'disqus',
-                '#post_render_cache' => array(
-                  '\Drupal\disqus\Element\Disqus::disqus_element_post_render_cache' => array(
-                    array('entity' => $entity),
-                  ),
-                ),
+                '#lazy_builder' => ['\Drupal\disqus\Element\Disqus::disqus_element_post_render_cache', [
+                  $entity->getEntityTypeId(),
+                  $entity->id(),
+                ]],
+                '#create_placeholder' => TRUE,
                 '#cache' => array(
                   'bin' => 'render',
                   'keys' => array('disqus', 'disqus_comments', "{$entity->getEntityTypeId()}", $entity->id()),

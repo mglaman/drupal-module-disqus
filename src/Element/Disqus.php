@@ -30,9 +30,15 @@ class Disqus extends RenderElement {
   /**
    * Post render function of the Disqus element to inject the Disqus JavaScript.
    */
-  public static function disqus_element_post_render_cache(array $element, array $context) {
+  public static function disqus_element_post_render_cache($entity_type_id, $entity_id) {
+    $element['#type'] = 'disqus';
+    $element = [
+      '#disqus' => [],
+      '#theme_wrappers' => ['disqus_noscript', 'container'],
+      '#attributes' => ['id' => 'disqus_thread'],
+    ];
+    $entity = \Drupal::entityManager()->getStorage($entity_type_id)->load($entity_id);
     // Construct the settings to be passed in for Disqus.
-    $entity = $context['entity'];
     $disqus = array(
       'domain' => \Drupal::config('disqus.settings')->get('disqus_domain'),
       'url' => $entity->url('canonical',array('absolute' => TRUE)),
