@@ -75,7 +75,7 @@ class DisqusFormatter extends FormatterBase implements ContainerFactoryPluginInt
   /**
    * {@inheritdoc}
    */
-  public function viewElements(FieldItemListInterface $items) {
+  public function viewElements(FieldItemListInterface $items, $langcode) {
     $element = array();
 
     if($items->status == 1 && $this->currentUser->hasPermission('view disqus comments')) {
