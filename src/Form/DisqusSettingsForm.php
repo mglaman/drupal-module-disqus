@@ -14,6 +14,7 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\file\FileUsage\FileUsageInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 class DisqusSettingsForm extends ConfigFormBase {
 
@@ -124,13 +125,13 @@ class DisqusSettingsForm extends ConfigFormBase {
     $form['behavior']['disqus_disable_mobile'] = array(
       '#type' => 'checkbox',
       '#title' => t('Disable mobile optimized version'),
-      '#description' => t('When enabled, uses the <a href="http://docs.disqus.com/help/2/">disqus_disable_mobile</a> flag to tell Disqus service to never use the mobile optimized version of Disqus.'),
+      '#description' => t('When enabled, uses the !disqus_disable_mobile flag to tell Disqus service to never use the mobile optimized version of Disqus.', array('!disqus_disable_mobile' => \Drupal::l('disqus_disable_mobile', URL::fromUri('http://docs.disqus.com/help/2/')))),
       '#default_value' => $disqus_config->get('behavior.disqus_disable_mobile'),
     );
     $form['behavior']['disqus_track_newcomment_ga'] = array(
       '#type' => 'checkbox',
       '#title' => t('Track new comments in Google Analytics'),
-      '#description' => t('When enabled, sends tracking information to Google Analytics. This will work only if you have installed the <a href="https://www.drupal.org/project/google_analytics">google_analytics</a> module.'),
+      '#description' => t('When enabled, sends tracking information to Google Analytics. This will work only if you have installed the !google_analytics module.', array('!google_analytics' => \Drupal::l('google_analytics', URL::fromUri('https://www.drupal.org/project/google_analytics')))),
       '#default_value' => $disqus_config->get('behavior.disqus_track_newcomment_ga'),
     );
     // Advanced settings.
@@ -138,9 +139,9 @@ class DisqusSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => t('Advanced'),
       '#group' => 'settings',
-      '#description' => t('Use these settings to configure the more advanced uses of Disqus. You can find more information about these in the <a href="!applications">Applications</a> section of Disqus. To enable some of these features, you will require a <a href="!addons">Disqus Add-on Package</a>.', array(
-        '!applications' => 'http://disqus.com/api/applications/',
-        '!addons' => 'http://disqus.com/addons/',
+      '#description' => t('Use these settings to configure the more advanced uses of Disqus. You can find more information about these in the !applications section of Disqus. To enable some of these features, you will require a !addons.', array(
+        '!applications' => \Drupal::l('Applications', URL::fromUri('http://disqus.com/api/applications/')),
+        '!addons' => \Drupal::l('Disqus Add-on Package', URL::fromUri('http://disqus.com/addons/')),
       )),
     );
     $form['advanced']['disqus_useraccesstoken'] = array(
@@ -162,9 +163,9 @@ class DisqusSettingsForm extends ConfigFormBase {
       '#weight' => 4,
       '#type' => 'fieldset',
       '#title' => t('Disqus API Settings'),
-      '#description' => t('These setting pertain to the official Disqus PHP API. You will need to install the <a href="!composer-manager">Composer Manager module</a> and run the composer-manager\'s install command to download the api files and enable api functionality. Check the <a href="!disqus">Disqus module</a> project page for more information.', array(
-        '!composer-manager' => 'https://www.drupal.org/project/composer_manager',
-        '!disqus' => 'https://www.drupal.org/project/disqus',
+      '#description' => t('These setting pertain to the official Disqus PHP API. You will need to install the !composer-manager and run the composer-manager\'s install command to download the api files and enable api functionality. Check the !disqus project page for more information.', array(
+        '!composer-manager' => \Drupal::l('Composer Manager module', URL::fromUri('https://www.drupal.org/project/composer_manager')),
+        '!disqus' => \Drupal::l('Disqus module', URL::fromUri('https://www.drupal.org/project/disqus')),
       )),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
