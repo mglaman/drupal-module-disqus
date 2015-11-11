@@ -103,7 +103,7 @@ class DisqusComment extends DestinationBase {
         $thread = $disqus->threads->details(array('forum' => $this->config->get('disqus_domain'), 'thread:ident' => $identifier, 'thread' => '1'));
       }
       catch (Exception $exception) {
-        $this->logger->error('Error loading thread details for entity : !identifier. Check your API keys.', array('!identifier' => $identifier));
+        $this->logger->error('Error loading thread details for entity : @identifier. Check your API keys.', array('@identifier' => $identifier));
         $thread = null;
       }
       if (!isset($thread->id)) {
@@ -111,7 +111,7 @@ class DisqusComment extends DestinationBase {
           $thread = $disqus->threads->create(array('forum' =>  $this->config->get('disqus_domain'), 'access_token' => $this->config->get('advanced.disqus_useraccesstoken'), 'title' => $row->getDestinationProperty('title'),  'identifier' => $identifier));
         }
         catch (Exception $exception) {
-          $this->logger->error('Error creating thread for entity : !identifier. Check your user access token.', array('!identifier' => $identifier));
+          $this->logger->error('Error creating thread for entity : @identifier. Check your user access token.', array('@identifier' => $identifier));
         }
       }
       try {
@@ -146,7 +146,7 @@ class DisqusComment extends DestinationBase {
         return TRUE;
       }
       catch (Exception $exception) {
-        $this->logger->error('Error creating post on thread !thread.', array('!thread' => $thread->id));
+        $this->logger->error('Error creating post on thread @thread.', array('@thread' => $thread->id));
       }
       return FALSE;
     }

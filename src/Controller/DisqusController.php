@@ -11,7 +11,8 @@ class DisqusController {
    */
   public function closeWindow() {
      $build = array(
-       '#markup'=> t('Thank you for logging in. Please close this window, or <a href="!clickhere">click here</a> to continue.', array('!clickhere' => 'javascript:window.close();')),
+       // Note: We are using '@' on purpose to not have bad protocol filtering.
+       '#markup'=> t('Thank you for logging in. Please close this window, or <a href="@clickhere">click here</a> to continue.', array('@clickhere' => 'javascript:window.close();')),
        '#attached' => array(
          'js' => array(
            array(

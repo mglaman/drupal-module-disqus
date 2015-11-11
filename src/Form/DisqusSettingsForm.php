@@ -139,9 +139,9 @@ class DisqusSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => t('Advanced'),
       '#group' => 'settings',
-      '#description' => t('Use these settings to configure the more advanced uses of Disqus. You can find more information about these in the !applications section of Disqus. To enable some of these features, you will require a !addons.', array(
-        '!applications' => \Drupal::l('Applications', URL::fromUri('http://disqus.com/api/applications/')),
-        '!addons' => \Drupal::l('Disqus Add-on Package', URL::fromUri('http://disqus.com/addons/')),
+      '#description' => t('Use these settings to configure the more advanced uses of Disqus. You can find more information about these in the <a href=":applications">Applications</a> section of Disqus. To enable some of these features, you will require a <a href=":addons">Disqus Add-on Package</a>.', array(
+        ':applications' => URL::fromUri('http://disqus.com/api/applications/')->toString(),
+        ':addons' => URL::fromUri('http://disqus.com/addons/')->toString(),
       )),
     );
     $form['advanced']['disqus_useraccesstoken'] = array(
@@ -163,9 +163,9 @@ class DisqusSettingsForm extends ConfigFormBase {
       '#weight' => 4,
       '#type' => 'fieldset',
       '#title' => t('Disqus API Settings'),
-      '#description' => t('These setting pertain to the official Disqus PHP API. You will need to install the !composer-manager and run the composer-manager\'s install command to download the api files and enable api functionality. Check the !disqus project page for more information.', array(
-        '!composer-manager' => \Drupal::l('Composer Manager module', URL::fromUri('https://www.drupal.org/project/composer_manager')),
-        '!disqus' => \Drupal::l('Disqus module', URL::fromUri('https://www.drupal.org/project/disqus')),
+      '#description' => t('These setting pertain to the official Disqus PHP API. You will need to install the <a href=":composer-manager">Composer Manager module</a> and run the composer-manager\'s install command to download the api files and enable api functionality. Check the <a href=":disqus">Disqus module</a> project page for more information.', array(
+        ':composer-manager' => URL::fromUri('https://www.drupal.org/project/composer_manager')->toString(),
+        ':disqus' => URL::fromUri('https://www.drupal.org/project/disqus')->toString(),
       )),
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
@@ -215,8 +215,8 @@ class DisqusSettingsForm extends ConfigFormBase {
     $form['advanced']['sso']['disqus_sso'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use Single Sign-On'),
-      '#description' => t('Provide <a href="!sso">Single Sign-On</a> access to your site.', array(
-        '!sso' => 'http://disqus.com/api/sso/',
+      '#description' => t('Provide <a href=":sso">Single Sign-On</a> access to your site.', array(
+        ':sso' => 'http://disqus.com/api/sso/',
       )),
       '#default_value' => $disqus_config->get('advanced.sso.disqus_sso'),
     );
