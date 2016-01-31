@@ -235,21 +235,15 @@ function disqus_field_views_data(\Drupal\field\FieldStorageConfigInterface $fiel
  * Implements hook_theme().
  */
 function disqus_theme() {
-  return array(
-    'disqus_noscript' => array(
-      'variables' => array('disqus' => NULL),
-    ),
-  );
-}
-
-/**
- * Prepares the noscript variables for the template used when
- * JavaScript is not available.
- */
-function theme_disqus_noscript() {
-  $url = Url::fromUri('http://' . \Drupal::config('disqus.settings')
-    ->get('disqus_domain') . '.disqus.com/');
-  $variables['disqus_message'] = \Drupal::l(t('View the discussion thread.'), $url);
+  $domain = \Drupal::config('disqus.settings')->get('disqus_domain');
+  return [
+    'disqus_noscript' => [
+      'variables' => [
+        'message' => t('View the discussion thread.'),
+        'url' => "http://$domain.disqus.com/",
+      ],
+    ],
+  ];
 }
 
 /**
