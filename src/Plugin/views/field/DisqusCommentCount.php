@@ -52,7 +52,7 @@ class DisqusCommentCount extends FieldPluginBase {
    *   The plugin implementation definition.
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
-   * @param \Drupal\disqus\DisqusCommentManager $disqusManager
+   * @param \Drupal\disqus\DisqusCommentManager $disqus_manager
    *   The disqus comment manager object.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
