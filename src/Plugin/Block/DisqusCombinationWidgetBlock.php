@@ -7,8 +7,7 @@
 
 namespace Drupal\disqus\Plugin\Block;
 
-use Drupal\core\Block\Annotation\Block;
-use Drupal\Core\Annotation\Translation;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  *
@@ -19,15 +18,83 @@ use Drupal\Core\Annotation\Translation;
  * )
  */
 class DisqusCombinationWidgetBlock extends DisqusBaseBlock {
-  protected $id = 'disqus_combination_widget';
 
   /**
    * {@inheritdoc}
    */
-  public function build() {
-    return array(
-      '#title' => t('Comments'),
-      $this->render('combination_widget')
-    );
+  public function defaultConfiguration() {
+    return parent::defaultConfiguration() + [
+      'color_theme' => 'blue',
+      'default_tab_view' => 'people',
+      'excerpt_length' => '200',
+      'hide_mods' => FALSE,
+    ];
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function buildQuery() {
+    return parent::buildQuery() + [
+      'color' => $this->configuration['color_theme'],
+      'default_tab' => $this->configuration['default_tab'],
+      'excerpt_length' => $this->configuration['excerpt_length'],
+      'hide_mods' => (int) $this->configuration['hide_mods'],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function blockForm($form, FormStateInterface $form_state) {
+    $form = parent::blockForm($form, $form_state);
+
+    $form['disqus']['color_theme'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Color Theme'),
+      '#options' => [
+        'blue' => $this->t('Blue'),
+        'grey' => $this->t('Grey'),
+        'green' => $this->t('Green'),
+        'red' => $this->t('Red'),
+        'orange' => $this->t('Orange'),
+      ],
+      '#default_value' => $this->configuration['color_theme'],
+    ];
+
+    $form['disqus']['default_tab_view'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Default Tab View'),
+      '#options' => [
+        'people' => $this->t('People'),
+        'recent' => $this->t('Recent'),
+        'popular' => $this->t('Popular'),
+      ],
+      '#default_value' => $this->configuration['default_tab_view'],
+    ];
+
+    $form['disqus']['excerpt_length'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Comment Except Length'),
+      '#default_value' => $this->configuration['excerpt_length'],
+      '#size' => 4,
+    ];
+
+    $form['disqus']['hide_mods'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Hide moderators in ranking'),
+      '#default_value' => $this->configuration['hide_mods'],
+    ];
+
+    return $form;
+
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function functionId() {
+    return 'combination_widget';
+  }
+
 }
