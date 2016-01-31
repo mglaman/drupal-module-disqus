@@ -76,17 +76,16 @@ class DisqusFormatter extends FormatterBase implements ContainerFactoryPluginInt
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $element = array();
-
+    $element = [];
     if($items->status == 1 && $this->currentUser->hasPermission('view disqus comments')) {
-      $element[] = array(
-        '#lazy_builder' => ['\Drupal\disqus\Element\Disqus::disqus_element_post_render_cache', [
-          $items->getEntity()->getEntityTypeId(),
-          $items->getEntity()->id(),
-        ]],
-        '#create_placeholder' => TRUE,
-      );
+      $element[] = [
+        '#type' => 'disqus',
+        '#url' => $items->getEntity()->toUrl('canonical', ['absolute' => TRUE])->toString(),
+        '#title' => (string) $items->getEntity()->label(),
+        '#identifier' => $items->identifier ?: "{$items->getEntity()->getEntityTypeId()}/{$items->getEntity()->id()}",
+      ];
     }
+
     return $element;
   }
 }
