@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'disqus' widget.
+ * Plugin implementation of the Disqus comments widget.
  *
  * @FieldWidget(
  *   id = "disqus_comment",
@@ -60,14 +60,22 @@ class DisqusWidget extends WidgetBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-
-    $element['status'] = array(
+    $element['status'] = [
       '#type' => 'checkbox',
       '#title' => t('Disqus Comments'),
-      '#description' => t('Users can post comments using <a href=":disqus">Disqus</a>.', array(':disqus' => 'http://disqus.com')),
+      '#description' => t('Users can post comments using <a href=":disqus">Disqus</a>.', [':disqus' => 'http://disqus.com']),
       '#default_value' => isset($items->status) ? $items->status : TRUE,
       '#access' => $this->currentUser->hasPermission('toggle disqus comments'),
-    );
+    ];
+
+    $element['identifier'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Disqus identifier'),
+      '#description' => $this->t('Unique identifier of the Disqus thread. "[entity-type]/[entity-id]" is used if not set. Changing this might cause comments to disappear. Use extreme caution!'),
+      '#default_value' => isset($items->identifier) ? $items->identifier : '',
+      '#access' => $this->currentUser->hasPermission('administer disqus'),
+    ];
+
     // If the advanced settings tabs-set is available (normally rendered in the
     // second column on wide-resolutions), place the field as a details element
     // in this tab-set.
@@ -77,7 +85,8 @@ class DisqusWidget extends WidgetBase implements ContainerFactoryPluginInterface
         '#group' => 'advanced',
       );
     }
-   return $element;
+
+    return $element;
  }
 
 }
