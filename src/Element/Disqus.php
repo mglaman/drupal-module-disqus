@@ -10,7 +10,7 @@ namespace Drupal\disqus\Element;
 use Drupal\Core\Render\Element\RenderElement;
 
 /**
- * Provides disqus module's render element properties
+ * Provides Disqus render element.
  *
  * @RenderElement("disqus")
  */
@@ -21,53 +21,86 @@ class Disqus extends RenderElement {
    */
   public function getInfo() {
     return array(
-      '#disqus' => array(),
-      '#theme_wrappers' => array('disqus_noscript', 'container'),
-      '#attributes' => array('id' => 'disqus_thread'),
+      '#title' => '',
+      '#url' => '',
+      '#identifier' => '',
+      '#callbacks' => '',
+      '#theme_wrappers' => ['disqus_noscript', 'container'],
+      '#attributes' => ['id' => 'disqus_thread'],
+      '#pre_render' => [
+        get_class() . '::generatePlaceholder',
+      ],
     );
+  }
+
+  /**
+   * #pre_render callback to generate a placeholder.
+   *
+   * @param array $element
+   *   A renderable array.
+   *
+   * @return array
+   *   The updated renderable array containing the placeholder.
+   */
+  public static function generatePlaceholder(array $element) {
+    if (\Drupal::currentUser()->hasPermission('view disqus comments')) {
+      $element[] = [
+        '#lazy_builder' => [
+          get_class() . '::displayDisqusComments',
+          [
+            $element['#title'],
+            $element['#url'],
+            $element['#identifier'],
+          ]
+        ],
+        '#create_placeholder' => TRUE,
+      ];
+    }
+
+    return $element;
   }
 
   /**
    * Post render function of the Disqus element to inject the Disqus JavaScript.
    */
-  public static function disqus_element_post_render_cache($entity_type_id, $entity_id) {
-    $element['#type'] = 'disqus';
+  public static function displayDisqusComments($title, $url, $identifier) {
+    $disqus_settings = \Drupal::config('disqus.settings');
+    /** @var \Drupal\Core\Render\RendererInterface $renderer */
+    $renderer = \Drupal::service('renderer');
     $element = [
-      '#disqus' => [],
       '#theme_wrappers' => ['disqus_noscript', 'container'],
       '#attributes' => ['id' => 'disqus_thread'],
     ];
-    $entity = \Drupal::entityManager()->getStorage($entity_type_id)->load($entity_id);
-    // Construct the settings to be passed in for Disqus.
-    $disqus = array(
-      'domain' => \Drupal::config('disqus.settings')->get('disqus_domain'),
-      'url' => $entity->url('canonical',array('absolute' => TRUE)),
-      'title' => $entity->label(),
-      'identifier' => "{$entity->getEntityTypeId()}/{$entity->id()}",
-    );
-    $disqus['disable_mobile'] = \Drupal::config('disqus.settings')->get('behavior.disqus_disable_mobile');
+    $renderer->addCacheableDependency($element, $disqus_settings);
+
+    $disqus = [
+      'domain' => $disqus_settings->get('disqus_domain'),
+      'url' => $url,
+      'title' => $title,
+      'identifier' => $identifier,
+      'disable_mobile' => $disqus_settings->get('behavior.disqus_disable_mobile'),
+    ];
 
     // If the user is logged in, we can inject the username and email for Disqus.
     $account = \Drupal::currentUser();
-
-    if (\Drupal::config('disqus.settings')->get('behavior.disqus_inherit_login') && !$account->isAnonymous()) {
+    if ($disqus_settings->get('behavior.disqus_inherit_login') && !$account->isAnonymous()) {
+      $renderer->addCacheableDependency($element, $account);
       $disqus['name'] = $account->getUsername();
       $disqus['email'] = $account->getEmail();
     }
 
     // Provide alternate language support if desired.
-    if (\Drupal::config('disqus.settings')->get('behavior.disqus_localization')) {
-      $language = \Drupal::languageManager()->getCurrentLanguage();
-      $disqus['language'] = $language->id;
+    if ($disqus_settings->get('behavior.disqus_localization')) {
+      $disqus['language'] = \Drupal::languageManager()->getCurrentLanguage()->getId();
     }
 
     // Check if we are to provide Single Sign-On access.
-    if (\Drupal::config('disqus.settings')->get('advanced.sso.disqus_sso')) {
-      $disqus += \Drupal::service('disqus.manager')->disqus_sso_disqus_settings();
+    if ($disqus_settings->get('advanced.sso.disqus_sso')) {
+      $disqus += \Drupal::service('disqus.manager')->ssoSettings();
     }
 
     // Check if we want to track new comments in Google Analytics.
-    if (\Drupal::config('disqus.settings')->get('behavior.disqus_track_newcomment_ga')) {
+    if ($disqus_settings->get('behavior.disqus_track_newcomment_ga')) {
       // Add a callback when a new comment is posted.
       $disqus['callbacks']['onNewComment'][] = 'Drupal.disqus.disqusTrackNewComment';
       // Attach the js with the callback implementation.
@@ -81,20 +114,25 @@ class Disqus extends RenderElement {
      *
      * Example:
      * @code
-     * $element['#disqus']['callbacks'] = array(
-     *   'onNewComment' => array(
-     *     'myCallbackThatFiresOnCommentPost',
-     *     'Drupal.mymodule.anotherCallbInsideDrupalObj',
-     *   ),
-     * );
+     * $element = [
+     *   '#type' => 'disqus',
+     *   '#callbacks' = [
+     *     'onNewComment' => [
+     *       'myCallbackThatFiresOnCommentPost',
+     *       'Drupal.mymodule.anotherCallbInsideDrupalObj',
+     *     ],
+     *   ],
+     * ];
      * @endcode
      */
-    if (!empty($element['#disqus']['callbacks'])) {
-      $disqus['callbacks'] = $element['#disqus']['callbacks'];
+    if (!empty($element['#callbacks'])) {
+      $disqus['callbacks'] = $element['#callbacks'];
     }
+
     // Add the disqus.js and all the settings to process the JavaScript and load Disqus.
     $element['#attached']['library'][] = 'disqus/disqus';
     $element['#attached']['drupalSettings']['disqus'] = $disqus;
+
     return $element;
   }
 
