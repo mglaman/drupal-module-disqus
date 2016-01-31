@@ -28,7 +28,7 @@ interface DisqusCommentManagerInterface {
    * @see \Drupal\Core\Entity\EntityManagerInterface::getFieldMap()
    */
   public function getFields($entity_type_id);
-  
+
   /**
    * Utility function to return all disqus_comment fields.
    */
@@ -42,22 +42,6 @@ interface DisqusCommentManagerInterface {
    *
    * @return array
    */
-  public function disqus_sso_disqus_settings();
-
-  /**
-   * Assembles the full private key for use in SSO authentication.
-   *
-   * @param array $data
-   *
-   * @return string
-   */
-  public function disqus_sso_key_encode($data);
-
-  /**
-   * Assembles user-specific data used by Disqus SSO.
-   *
-   * @return array
-   */
-  public function disqus_sso_user_data();
+  public function ssoSettings();
 
 }
