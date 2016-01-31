@@ -7,13 +7,14 @@
 
 namespace Drupal\disqus\Plugin\migrate\source;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
 use Drupal\migrate\Row;
-use Drupal\user\Entity\User;
 use Drupal\migrate\Entity\MigrationInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Disqus comment source using disqus-api.
@@ -22,7 +23,7 @@ use Drupal\Core\Entity\Query\QueryFactory;
  *   id = "disqus_source"
  * )
  */
-class DisqusComment extends SourcePluginBase {
+class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginInterface{
 
   /**
    * Iterator.
@@ -80,8 +81,12 @@ class DisqusComment extends SourcePluginBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
     return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $migration,
       $container->get('logger.factory')->get('disqus'),
       $container->get('config.factory'),
       $container->get('entity.query')
@@ -92,7 +97,7 @@ class DisqusComment extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function getIds() {
-    $ids['id']['type'] = 'int';
+    $ids['id']['type'] = 'integer';
     return $ids;
   }
 
@@ -120,45 +125,6 @@ class DisqusComment extends SourcePluginBase {
   /**
    * {@inheritdoc}
    */
-  public function getIterator() {
-    if (!isset($this->iterator)) {
-      $disqus = disqus_api();
-      if ($disqus) {
-        try {
-          $posts = $disqus->forums->listPosts(array('forum' => $this->config->get('disqus_domain')));
-        }
-        catch (Exception $exception) {
-          drupal_set_message(t('There was an error loading the forum details. Please check you API keys and try again.', 'error'));
-          $this->logger->error('Error loading the Disqus PHP API. Check your forum name.', array());
-          return FALSE;
-        }
-        
-        $items = array();
-        foreach ($posts as $post) {
-          $id = $post['id'];
-          $items[$id]['id'] = $id;
-          $items[$id]['pid'] = $post['parent'];
-          $thread = $disqus->threads->details(array('thread' => $post['thread']));
-          $items[$id]['identifier'] = $thread['identifier'];
-          $items[$id]['name'] = $post['author']['name'];
-          $items[$id]['email'] = $post['author']['email'];
-          $items[$id]['user_id'] = $post['author']['id'];
-          $items[$id]['url'] = $post['author']['url'];
-          $items[$id]['ipAddress'] = $post['ipAddress'];
-          $items[$id]['isAnonymous'] = $post['author']['isAnonymous'];
-          $items[$id]['createdAt'] = $post['createdAt'];
-          $items[$id]['comment'] = $post['message'];
-          $items[$id]['isEdited'] = $post['isEdited'];
-        }
-      }
-      $this->iterator = new \ArrayIterator($items);
-    }
-    return $this->iterator;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function prepareRow(Row $row) {
     $row->setSourceProperty('uid', 0);
     $email = $row->getSourceProperty('email');
@@ -167,6 +133,48 @@ class DisqusComment extends SourcePluginBase {
       $row->setSourceProperty('uid', key($user));
     }
     return parent::prepareRow($row);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __toString() {
+    return 'Disqus comments';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function initializeIterator() {
+    if ($disqus = disqus_api()) {
+      try {
+        $posts = $disqus->forums->listPosts(array('forum' => $this->config->get('disqus_domain')));
+      }
+      catch (\Exception $exception) {
+        drupal_set_message(t('There was an error loading the forum details. Please check you API keys and try again.', 'error'));
+        $this->logger->error('Error loading the Disqus PHP API. Check your forum name.', array());
+        return FALSE;
+      }
+
+      $items = array();
+      foreach ($posts as $post) {
+        $id = $post['id'];
+        $items[$id]['id'] = $id;
+        $items[$id]['pid'] = $post['parent'];
+        $thread = $disqus->threads->details(array('thread' => $post['thread']));
+        $items[$id]['identifier'] = $thread['identifier'];
+        $items[$id]['name'] = $post['author']['name'];
+        $items[$id]['email'] = $post['author']['email'];
+        $items[$id]['user_id'] = $post['author']['id'];
+        $items[$id]['url'] = $post['author']['url'];
+        $items[$id]['ipAddress'] = $post['ipAddress'];
+        $items[$id]['isAnonymous'] = $post['author']['isAnonymous'];
+        $items[$id]['createdAt'] = $post['createdAt'];
+        $items[$id]['comment'] = $post['message'];
+        $items[$id]['isEdited'] = $post['isEdited'];
+      }
+    }
+    return new \ArrayIterator($items);
   }
 }
 

@@ -9,8 +9,10 @@ namespace Drupal\disqus\Plugin\migrate\destination;
 
 use Drupal\migrate\Plugin\migrate\destination\DestinationBase;
 use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\migrate\Row;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Disqus comment destination.
@@ -60,8 +62,12 @@ class DisqusComment extends DestinationBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
     return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $migration,
       $container->get('logger.factory')->get('disqus'),
       $container->get('config.factory')
     );
@@ -102,7 +108,7 @@ class DisqusComment extends DestinationBase {
       try {
         $thread = $disqus->threads->details(array('forum' => $this->config->get('disqus_domain'), 'thread:ident' => $identifier, 'thread' => '1'));
       }
-      catch (Exception $exception) {
+      catch (\Exception $exception) {
         $this->logger->error('Error loading thread details for entity : @identifier. Check your API keys.', array('@identifier' => $identifier));
         $thread = null;
       }
@@ -110,7 +116,7 @@ class DisqusComment extends DestinationBase {
         try {
           $thread = $disqus->threads->create(array('forum' =>  $this->config->get('disqus_domain'), 'access_token' => $this->config->get('advanced.disqus_useraccesstoken'), 'title' => $row->getDestinationProperty('title'),  'identifier' => $identifier));
         }
-        catch (Exception $exception) {
+        catch (\Exception $exception) {
           $this->logger->error('Error creating thread for entity : @identifier. Check your user access token.', array('@identifier' => $identifier));
         }
       }
@@ -145,7 +151,7 @@ class DisqusComment extends DestinationBase {
         }
         return TRUE;
       }
-      catch (Exception $exception) {
+      catch (\Exception $exception) {
         $this->logger->error('Error creating post on thread @thread.', array('@thread' => $thread->id));
       }
       return FALSE;

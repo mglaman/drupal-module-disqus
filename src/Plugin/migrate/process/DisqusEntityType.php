@@ -7,11 +7,11 @@
 
 namespace Drupal\disqus\Plugin\migrate\process;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\ProcessPluginBase;
-use Drupal\migrate\MigrateExecutable;
 use Drupal\migrate\Row;
 use Drupal\migrate\Entity\MigrationInterface;
-use Drupal\Core\Entity\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\migrate\MigrateSkipRowException;
@@ -26,11 +26,11 @@ use Drupal\migrate\MigrateSkipRowException;
 class DisqusEntityType extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The entity manager service.
+   * The entity type manager service.
    *
    * @var \Drupal\Core\Entity\EntityManager
    */
-  protected $entityManager;
+  protected $entityTypeManager;
 
   /**
    * Constructs a DisqusEntityType object.
@@ -41,35 +41,32 @@ class DisqusEntityType extends ProcessPluginBase implements ContainerFactoryPlug
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\migrate\Entity\MigrationInterface $migration
-   *   The migration entity.
-   * @param \Drupal\Core\Entity\EntityManager $entity_manager
-   *   The entity manager service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, MigrationInterface $migration, EntityManager $entity_manager) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $migration);
-    $this->entityManager = $entity_manager;
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
     return new static(
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $migration,
-      $container->get('entity.manager')
+      $container->get('entity_type.manager')
     );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function transform($value, MigrationExecutable $migrate_executable, Row $row, $destination_property) {
+  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $id_parts = explode("/", $value);
-    $entity = $this->entityManager->getDefinition($id_parts[0], FALSE);
+    $entity = $this->entityTypeManager->getDefinition($id_parts[0], FALSE);
     if($entity == null) {
       // Or maybe migrate comments some other way
       throw new MigrateSkipRowException();
