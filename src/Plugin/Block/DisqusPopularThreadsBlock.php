@@ -1,13 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Block\DisqusPopularThreadsBlock.
- */
-
 namespace Drupal\disqus\Plugin\Block;
 
 /**
+ * Plugin implementation of the 'disqus_popular_threads'.
  *
  * @Block(
  *   id = "disqus_popular_threads",

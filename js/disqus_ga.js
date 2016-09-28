@@ -3,14 +3,14 @@
  * JavaScript for the Disqus Google Analytics module.
  */
 
-(function($) {
+(function ($) {
 
 "use strict";
 
 /**
  * Track new comments in Google analytics.
  */
-Drupal.disqus.disqusTrackNewComment = function() {
+Drupal.disqus.disqusTrackNewComment = function () {
 
   // Make sure that the google analytics event tracking object or
   // the universal analytics tracking function exists.

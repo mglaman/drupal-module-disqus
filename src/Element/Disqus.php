@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Element\Disqus.
- */
-
 namespace Drupal\disqus\Element;
 
 use Drupal\Core\Render\Element\RenderElement;
@@ -33,7 +28,7 @@ class Disqus extends RenderElement {
   }
 
   /**
-   * #pre_render callback to generate a placeholder.
+   * Pre_render callback to generate a placeholder.
    *
    * @param array $element
    *   A renderable array.
@@ -50,7 +45,7 @@ class Disqus extends RenderElement {
             $element['#title'],
             $element['#url'],
             $element['#identifier'],
-          ]
+          ],
         ],
         '#create_placeholder' => TRUE,
       ];
@@ -80,7 +75,8 @@ class Disqus extends RenderElement {
       'disable_mobile' => $disqus_settings->get('behavior.disqus_disable_mobile'),
     ];
 
-    // If the user is logged in, we can inject the username and email for Disqus.
+    // If the user is logged in, we can inject the username and email for
+    // Disqus.
     $account = \Drupal::currentUser();
     if ($disqus_settings->get('behavior.disqus_inherit_login') && !$account->isAnonymous()) {
       $renderer->addCacheableDependency($element, $account);
@@ -105,30 +101,27 @@ class Disqus extends RenderElement {
       // Attach the js with the callback implementation.
       $element['#attached']['library'][] = 'disqus/ga';
     }
-
-    /**
-     * Pass callbacks on if needed. Callbacks array is two dimensional array
-     * with callback type as key on first level and array of JS callbacks on the
-     * second level.
-     *
-     * Example:
-     * @code
-     * $element = [
-     *   '#type' => 'disqus',
-     *   '#callbacks' = [
-     *     'onNewComment' => [
-     *       'myCallbackThatFiresOnCommentPost',
-     *       'Drupal.mymodule.anotherCallbInsideDrupalObj',
-     *     ],
-     *   ],
-     * ];
-     * @endcode
-     */
+    // Pass callbacks on if needed. Callbacks array is two dimensional array
+    // with callback type as key on first level and array of JS callbacks on the
+    // second level.
+    // Example:
+    // @code
+    // $element = [
+    //   '#type' => 'disqus',
+    //   '#callbacks' = [
+    //     'onNewComment' => [
+    //       'myCallbackThatFiresOnCommentPost',
+    //       'Drupal.mymodule.anotherCallbInsideDrupalObj',
+    //     ],
+    //   ],
+    // ];
+    // @endcode
     if (!empty($element['#callbacks'])) {
       $disqus['callbacks'] = $element['#callbacks'];
     }
 
-    // Add the disqus.js and all the settings to process the JavaScript and load Disqus.
+    // Add the disqus.js and all the settings to process the JavaScript and load
+    // Disqus.
     $element['#attached']['library'][] = 'disqus/disqus';
     $element['#attached']['drupalSettings']['disqus'] = $disqus;
 

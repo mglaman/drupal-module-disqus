@@ -27,8 +27,8 @@ Drupal.behaviors.disqus = {
     // Load the Disqus comments.
     if (settings.disqus || false) {
 
-      // Ensure that the Disqus comments are only loaded once
-      $('body').once('disqus').each(function() {
+      // Ensure that the Disqus comments are only loaded once.
+      $('body').once('disqus').each(function () {
 
         // Setup the global JavaScript variables for Disqus.
         disqus_shortname = settings.disqus.domain;
@@ -40,7 +40,7 @@ Drupal.behaviors.disqus = {
         disqus_def_email = settings.disqus.email || '';
 
         // Language and SSO settings are passed in through disqus_config().
-        disqus_config = function() {
+        disqus_config = function () {
           if (settings.disqus.language || false) {
             this.language = settings.disqus.language;
           }
@@ -61,7 +61,7 @@ Drupal.behaviors.disqus = {
                 for (var j = 0; j < callback.length; j++) {
                   fn = fn[callback[j]];
                 }
-                if(typeof fn === 'function') {
+                if (typeof fn === 'function') {
                   this.callbacks[key].push(fn);
                 }
               }
@@ -79,11 +79,10 @@ Drupal.behaviors.disqus = {
       });
     }
 
-
     // Load the comment numbers JavaScript.
     if (settings.disqusComments || false) {
       // Ensure that comment numbers JavaScript is only loaded once.
-      $('body').once('disqusComments').each(function() {
+      $('body').once('disqusComments').each(function () {
         disqus_shortname = settings.disqusComments;
         // Make the AJAX call to get the number of comments.
         jQuery.ajax({

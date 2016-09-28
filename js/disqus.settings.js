@@ -11,10 +11,10 @@ Drupal.behaviors.disqusSettingsForm = {
   attach: function (context) {
     var $context = $(context);
 
-    $context.find('#edit-visibility').drupalSetSummary(function(context) {
+    $context.find('#edit-visibility').drupalSetSummary(function (context) {
       var vals = [];
 
-      $('#edit-disqus-nodetypes div.form-type-checkbox').each(function(){
+      $('#edit-disqus-nodetypes div.form-type-checkbox').each(function () {
         var vals_node_types = [];
         if ($(this).find('input').is(':checked')) {
           vals_node_types.push(Drupal.checkPlain($(this).find('label').text()));
@@ -31,7 +31,7 @@ Drupal.behaviors.disqusSettingsForm = {
       return vals.join('<br />');
     });
 
-    $context.find('#edit-behavior').drupalSetSummary(function(context) {
+    $context.find('#edit-behavior').drupalSetSummary(function (context) {
       var vals = [];
 
       if ($('#edit-disqus-userapikey').val()) {
@@ -48,7 +48,7 @@ Drupal.behaviors.disqusSettingsForm = {
       return vals.join(', ');
     });
 
-    $context.find('#edit-advanced').drupalSetSummary(function(context) {
+    $context.find('#edit-advanced').drupalSetSummary(function (context) {
       var vals = [];
 
       if ($('#edit-disqus-publickey').val()) {

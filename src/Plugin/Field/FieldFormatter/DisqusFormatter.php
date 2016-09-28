@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Field\FieldFormatter\DisqusFormatter.
- */
-
 namespace Drupal\disqus\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FormatterBase;
@@ -96,4 +91,5 @@ class DisqusFormatter extends FormatterBase implements ContainerFactoryPluginInt
 
     return $element;
   }
+
 }

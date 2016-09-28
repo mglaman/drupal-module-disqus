@@ -1,15 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Block\DisqusCombinationWidgetBlock.
- */
-
 namespace Drupal\disqus\Plugin\Block;
 
 use Drupal\Core\Form\FormStateInterface;
 
 /**
+ * Plugin implementation of the 'disqus_combination_widget'.
  *
  * @Block(
  *   id = "disqus_combination_widget",

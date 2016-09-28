@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\migrate\source\DisqusEnabledNodeType.
- */
-
 namespace Drupal\disqus\Plugin\migrate\source;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -35,7 +30,7 @@ class DisqusEnabledNodeTypes extends DrupalSqlBase {
    */
   protected function values() {
     $values = [];
-    if($result = $this->prepareQuery()->execute()->fetchAllKeyed()) {
+    if ($result = $this->prepareQuery()->execute()->fetchAllKeyed()) {
       $enabled_types = unserialize($result['disqus_nodetypes']);
       $enabled_types = array_filter($enabled_types);
       $defaults = unserialize($result['disqus_nodetypes_default']);

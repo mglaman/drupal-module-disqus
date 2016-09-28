@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Block\DisqusBaseBlock.
- */
-
 namespace Drupal\disqus\Plugin\Block;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -19,6 +14,9 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 
+/**
+ * Create a new DisqusBaseBlock.
+ */
 abstract class DisqusBaseBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
@@ -112,7 +110,9 @@ abstract class DisqusBaseBlock extends BlockBase implements ContainerFactoryPlug
     $form['disqus']['items'] = [
       '#type' => 'select',
       '#title' => $this->t('Number of items to show'),
-      '#options' => [1 => 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+      '#options' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        16, 17, 18, 19, 20,
+      ],
       '#default_value' => $this->configuration['items'],
     ];
 
@@ -131,7 +131,7 @@ abstract class DisqusBaseBlock extends BlockBase implements ContainerFactoryPlug
   /**
    * {@inheritdoc}
    */
-  function build() {
+  public function build() {
     $function = $this->functionId();
     $url = Url::fromUri(
       "http://disqus.com/forums/{$this->disqusConfig->get('disqus_domain')}/$function.js",
@@ -143,7 +143,7 @@ abstract class DisqusBaseBlock extends BlockBase implements ContainerFactoryPlug
     return [
       'widget' => [
         'script_tag' => [
-          '#markup' => new FormattableMarkup('<script type="text/javascript" src="' . $url  . '"></script>', []),
+          '#markup' => new FormattableMarkup('<script type="text/javascript" src="' . $url . '"></script>', []),
         ],
         '#theme_wrappers' => ['container'],
         '#attributes' => [

@@ -79,14 +79,15 @@ class DisqusCommentCount extends FieldPluginBase {
   /**
    * {@inheritdoc}
    */
-  function render(ResultRow $values) {
-    // Ensure Disqus comments are available on the entity and user has access to edit this entity.
+  public function render(ResultRow $values) {
+    // Ensure Disqus comments are available on the entity and user has access to
+    // edit this entity.
     $entity = $this->getEntity($values);
     if (!$entity) {
       return;
     }
     $field = $this->disqusManager->getFields($entity->getEntityTypeId());
-    if(!$entity->hasField(key($field))) {
+    if (!$entity->hasField(key($field))) {
       return;
     }
     if ($entity->get(key($field))->status && $this->currentUser->hasPermission('view disqus comments')) {
@@ -108,17 +109,15 @@ class DisqusCommentCount extends FieldPluginBase {
           'class' => array('links', 'inline'),
         ),
       );
-
-      /**
-       * This attaches disqus.js specified in the disqus.libraries.yml file,
-       * which will look for the DOM variable disqusComments which is set below.
-       * When found, the disqus javascript api replaces the html element with
-       * the attribute: "data-disqus-identifier" and replaces the element with
-       * the number of comments on the entity.
-       */
+      // This attaches disqus.js specified in the disqus.libraries.yml file,
+      // which will look for the DOM variable disqusComments which is set below.
+      // When found, the disqus javascript api replaces the html element with
+      // the attribute: "data-disqus-identifier" and replaces the element with
+      // the number of comments on the entity.
       $content['#attached']['library'][] = 'disqus/disqus';
       $content['#attached']['drupalSettings']['disqusComments'] = $this->config->get('disqus_domain');
       return $content;
     }
   }
+
 }

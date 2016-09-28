@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Hooks provided by the Disqus module.
@@ -13,11 +14,11 @@
  * Modify user data prepared for use with Disqus SSO.
  *
  * @param array $data
- *  - id: User's ID. Used by disqus to uniquely identify the user.
- *  - username: Display name.
- *  - email: Email address.
- *  - url: Link to the user's site profile page.
- *  - avatar: URI of the user's picture.
+ *   - id: User's ID. Used by disqus to uniquely identify the user.
+ *   - username: Display name.
+ *   - email: Email address.
+ *   - url: Link to the user's site profile page.
+ *   - avatar: URI of the user's picture.
  */
 function hook_disqus_user_data_alter(&$data) {
   global $user;

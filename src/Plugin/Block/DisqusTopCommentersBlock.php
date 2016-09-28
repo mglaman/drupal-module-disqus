@@ -1,15 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Block\DisqusTopCommentersBlock.
- */
-
 namespace Drupal\disqus\Plugin\Block;
 
 use Drupal\Core\Form\FormStateInterface;
 
 /**
+ * Plugin implementation of the 'disqus_top_commenters'.
  *
  * @Block(
  *   id = "disqus_top_commenters",
@@ -52,7 +48,7 @@ class DisqusTopCommentersBlock extends DisqusBaseBlock {
       '#title' => $this->t('Show avatars'),
       '#options' => [
         FALSE => $this->t('No'),
-        TRUE => $this->t('Yes')
+        TRUE => $this->t('Yes'),
       ],
       '#default_value' => $this->configuration['show_avatars'],
     ];
@@ -85,4 +81,5 @@ class DisqusTopCommentersBlock extends DisqusBaseBlock {
   public function functionId() {
     return 'top_commenters_widget';
   }
+
 }

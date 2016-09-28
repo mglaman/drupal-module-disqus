@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\migrate\process\DisqusEntityType.
- */
-
 namespace Drupal\disqus\Plugin\migrate\process;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -39,7 +34,7 @@ class DisqusEntityType extends ProcessPluginBase implements ContainerFactoryPlug
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
    *   The plugin ID for the plugin instance.
-   * @param mixed $plugin_definition
+   * @param array $plugin_definition
    *   The plugin implementation definition.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager service.
@@ -67,8 +62,8 @@ class DisqusEntityType extends ProcessPluginBase implements ContainerFactoryPlug
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     $id_parts = explode("/", $value);
     $entity = $this->entityTypeManager->getDefinition($id_parts[0], FALSE);
-    if($entity == null) {
-      // Or maybe migrate comments some other way
+    if ($entity == NULL) {
+      // Or maybe migrate comments some other way.
       throw new MigrateSkipRowException();
     }
     return $id_parts[0];

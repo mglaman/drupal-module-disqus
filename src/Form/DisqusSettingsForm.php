@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Form\DisqusSettingsForm.
- */
-
 namespace Drupal\disqus\Form;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -15,6 +10,9 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\file\FileUsage\FileUsageInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Provides Disqus settings form.
+ */
 class DisqusSettingsForm extends ConfigFormBase {
 
   /**
@@ -45,9 +43,9 @@ class DisqusSettingsForm extends ConfigFormBase {
    *   The factory for configuration objects.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
-   * @param \Drupal\file\FileUsage\FileUsageInterface
+   * @param \Drupal\file\FileUsage\FileUsageInterface $file_usage
    *   The file usage overridable.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
   public function __construct(ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, FileUsageInterface $file_usage, EntityTypeManagerInterface $entity_type_manager) {
@@ -289,11 +287,11 @@ class DisqusSettingsForm extends ConfigFormBase {
       ->set('advanced.sso.disqus_use_site_logo', $form_state->getValue('disqus_use_site_logo'))
       ->save();
 
-    if($form_state->hasValue('disqus_api_update')) {
+    if ($form_state->hasValue('disqus_api_update')) {
       $config->set('advanced.api.disqus_api_update', $form_state->getValue('disqus_api_update'))->save();
     }
 
-    if($form_state->hasValue('disqus_api_delete')) {
+    if ($form_state->hasValue('disqus_api_delete')) {
       $config->set('advanced.api.disqus_api_delete', $form_state->getValue('disqus_api_delete'))->save();
     }
 

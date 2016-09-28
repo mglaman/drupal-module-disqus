@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\migrate\source\DisqusCommentsStatus.
- */
-
 namespace Drupal\disqus\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
@@ -43,7 +38,7 @@ class DisqusCommentsStatus extends DrupalSqlBase {
       ->condition('v.name', 'disqus_nodetypes')
       ->execute()
       ->fetchField();
-     return array_filter(unserialize($enabled));
+    return array_filter(unserialize($enabled));
   }
 
   /**
@@ -56,7 +51,7 @@ class DisqusCommentsStatus extends DrupalSqlBase {
     $query->orderBy('n.nid');
     $query->leftJoin('disqus', 'd', 'd.nid=n.nid');
     $query->addField('n', 'nid', 'nid');
-    # No entry in {disqus} table means status == 1.
+    // No entry in {disqus} table means status == 1.
     $query->addExpression('IF(d.status IS NULL, 1, d.status)', 'status');
     return $query;
   }

@@ -7,6 +7,9 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\field\FieldStorageConfigInterface;
 
 /**
  * API No action on entity delete.
@@ -30,19 +33,28 @@ function disqus_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.disqus':
       $output = '<p>' . t('Uses the <a href=":disqus">Disqus</a> comment system to enhance comments.', array(
-          ':disqus' => URL::fromUri('http://disqus.com/')->toString())) . '</p>';
+        ':disqus' => URL::fromUri('http://disqus.com/')->toString(),
+      )) . '</p>';
       $output .= '<h3>' . t('Installation') . '</h3>';
       $output .= '<ol><li>' . t('Register your site information at <a href=":disqus">Disqus</a>.', array(':disqus' => URL::fromUri('http://disqus.com/')->toString())) . '</li>';
       $output .= '<li>' . t('In the <a href=":configuration">Disqus configuration</a>, set the domain to what you registered with Disqus.',
           array(':configuration' => Url::fromRoute('disqus.settings')->toString())) . '</li>';
       $output .= '<li>' . t('Disqus comments can be enabled for any <a href=":entity-help">entity sub-type</a> (for example, a <a href=":content-type">content type</a>). On the Manage fields page for each entity sub-type, you can enable disqus by adding a Disqus comments field.', array(
-          ':entity-help' => Url::fromRoute('help.page', array('name' => 'entity'))->toString(),
-          ':content-type' => Url::fromRoute('entity.node_type.collection')->toString(),
-        )) . '</li>';
+        ':entity-help' => Url::fromRoute('help.page', array('name' => 'entity'))->toString(),
+        ':content-type' => Url::fromRoute('entity.node_type.collection')->toString(),
+      )) . '</li>';
       $output .= '<li>' . t('Alternatively disqus comments can be used on <a href=":blocks">Blocks</a>. You will first need to configure the disqus comment field for any entity sub-type.',
-          array(':blocks' => Url::fromRoute('block.admin_display')->toString())) . '</li>';
-      $output .= '<li>' . t('Visit the <a href=":permissions">permissions</a>, and set which users you would like to have the ability to view Disqus threads (recommended for role).',
-          array(':permissions' => Url::fromRoute('user.admin_permissions', array(), array('fragment' => 'module-disqus'))->toString())) . '</li></ol>';
+        array(':blocks' => Url::fromRoute('block.admin_display')->toString())) . '</li>';
+      $output .= '<li>' . t('Visit the <a href=":permissions">permissions</a>,'
+          . ' and set which users you would like to have the ability to view ' .
+          'Disqus threads (recommended for role).',
+        array(
+          ':permissions' => Url::fromRoute('user.admin_permissions',
+        array(),
+        array(
+          'fragment' => 'module-disqus',
+        ))->toString(),
+        )) . '</li></ol>';
       return $output;
 
     case 'disqus.settings':
@@ -54,10 +66,10 @@ function disqus_help($route_name, RouteMatchInterface $route_match) {
 /**
  * Implements hook_node_links_alter().
  */
-function disqus_node_links_alter(array &$node_links, \Drupal\node\NodeInterface $node, array &$context) {
+function disqus_node_links_alter(array &$node_links, NodeInterface $node, array &$context) {
   $fields = \Drupal::service('disqus.manager')->getFields('node');
   foreach ($fields as $field_name => $detail) {
-    //Skip fields that the node does not have.
+    // Skip fields that the node does not have.
     if (!$node->hasField($field_name)) {
       continue;
     }
@@ -97,9 +109,9 @@ function disqus_node_links_alter(array &$node_links, \Drupal\node\NodeInterface 
 /**
  * Implements hook_entity_delete().
  */
-function disqus_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
+function disqus_entity_delete(EntityInterface $entity) {
   // Only act on content entities.
-  if (!($entity instanceof Drupal\Core\Entity\ContentEntityInterface)) {
+  if (!($entity instanceof EntityInterface)) {
     return;
   }
 
@@ -116,11 +128,13 @@ function disqus_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
     $disqus = disqus_api();
     if ($disqus) {
       try {
-        // Load the thread data from disqus. Passing thread is required to allow the thread:ident call to work correctly. There is a pull request to fix this issue.
+        // Load the thread data from disqus. Passing thread is required to allow
+        // the thread:ident call to work correctly. There is a pull request to
+        // fix this issue.
         $thread = $disqus->threads->details(array(
           'forum' => $config->get('disqus_domain'),
           'thread:ident' => "{$entity->getEntityTypeId()}/{$entity->id()}",
-          'thread' => '1'
+          'thread' => '1',
         ));
       }
       catch (Exception $exception) {
@@ -134,7 +148,7 @@ function disqus_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
             $disqus->threads->close(array(
               'access_token' => $config->get('advanced.disqus_useraccesstoken'),
               'thread' => $thread->id,
-              'forum' => $config->get('disqus_domain')
+              'forum' => $config->get('disqus_domain'),
             ));
           }
           catch (Exception $exception) {
@@ -148,7 +162,7 @@ function disqus_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
             $disqus->threads->remove(array(
               'access_token' => $config->get('advanced.disqus_useraccesstoken'),
               'thread' => $thread->id,
-              'forum' => $config->get('disqus_domain')
+              'forum' => $config->get('disqus_domain'),
             ));
           }
           catch (Exception $exception) {
@@ -165,9 +179,9 @@ function disqus_entity_delete(Drupal\Core\Entity\EntityInterface $entity) {
 /**
  * Implements hook_entity_update().
  */
-function disqus_entity_update(Drupal\Core\Entity\EntityInterface $entity) {
+function disqus_entity_update(EntityInterface $entity) {
   // Only act on content entities.
-  if (!($entity instanceof Drupal\Core\Entity\ContentEntityInterface)) {
+  if (!($entity instanceof EntityInterface)) {
     return;
   }
 
@@ -183,11 +197,13 @@ function disqus_entity_update(Drupal\Core\Entity\EntityInterface $entity) {
     $disqus = disqus_api();
     if ($disqus) {
       try {
-        // Load the thread data from disqus. Passing thread is required to allow the thread:ident call to work correctly. There is a pull request to fix this issue.
+        // Load the thread data from disqus. Passing thread is required to allow
+        // the thread:ident call to work correctly. There is a pull request to
+        // fix this issue.
         $thread = $disqus->threads->details(array(
           'forum' => $config->get('disqus_domain'),
           'thread:ident' => "{$entity->getEntityTypeId()}/{$entity->id()}",
-          'thread' => '1'
+          'thread' => '1',
         ));
       }
       catch (Exception $exception) {
@@ -202,7 +218,7 @@ function disqus_entity_update(Drupal\Core\Entity\EntityInterface $entity) {
             'thread' => $thread->id,
             'forum' => $config->get('disqus_domain'),
             'title' => $entity->label(),
-            'url' => $entity->url('canonical', array('absolute' => TRUE))
+            'url' => $entity->url('canonical', array('absolute' => TRUE)),
           ));
         }
         catch (Exception $exception) {
@@ -218,7 +234,7 @@ function disqus_entity_update(Drupal\Core\Entity\EntityInterface $entity) {
 /**
  * Implements hook_field_views_data().
  */
-function disqus_field_views_data(\Drupal\field\FieldStorageConfigInterface $field_storage) {
+function disqus_field_views_data(FieldStorageConfigInterface $field_storage) {
   $data = views_field_default_views_data($field_storage);
   foreach ($data as $table_name => $table_data) {
     $data[$table_name]['entity_id']['field'] = array(
@@ -249,7 +265,7 @@ function disqus_theme() {
 /**
  * Creates an instance of the Disqus PHP API.
  *
- * @return
+ * @return object
  *   The instance of the Disqus API.
  */
 function disqus_api() {
@@ -267,7 +283,7 @@ function disqus_api() {
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function disqus_views_api() {
   return array('api' => 3);

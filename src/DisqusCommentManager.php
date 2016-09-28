@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\DisqusCommentManager.
- */
-
 namespace Drupal\disqus;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
@@ -14,7 +9,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Url;
 
 /**
- * Disqus comment manager contains common functions to manage disqus_comment fields.
+ * It contains common functions to manage disqus_comment fields.
  */
 class DisqusCommentManager implements DisqusCommentManagerInterface {
 
@@ -136,8 +131,10 @@ class DisqusCommentManager implements DisqusCommentManagerInterface {
    * Assembles the full private key for use in SSO authentication.
    *
    * @param array $data
+   *    An array contating data.
    *
    * @return string
+   *    The String containing message, timestamp.
    */
   protected function ssoKeyEncode($data) {
     // Encode the data to be sent off to Disqus.
@@ -152,6 +149,7 @@ class DisqusCommentManager implements DisqusCommentManagerInterface {
    * Assembles user-specific data used by Disqus SSO.
    *
    * @return array
+   *    An array containing sso user data.
    */
   protected function ssoUserData() {
     $account = $this->currentUser;

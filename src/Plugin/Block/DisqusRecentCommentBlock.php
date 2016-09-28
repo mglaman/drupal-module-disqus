@@ -1,15 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\Block\DisqusRecentCommentersBlock.
- */
-
 namespace Drupal\disqus\Plugin\Block;
 
 use Drupal\Core\Form\FormStateInterface;
 
 /**
+ * Plugin implementation of the 'disqus_recent_comments'.
  *
  * @Block(
  *   id = "disqus_recent_comments",
@@ -52,7 +48,7 @@ class DisqusRecentCommentBlock extends DisqusBaseBlock {
       '#title' => $this->t('Show avatars'),
       '#options' => [
         FALSE => $this->t('No'),
-        TRUE => $this->t('Yes')
+        TRUE => $this->t('Yes'),
       ],
       '#default_value' => $this->configuration['show_avatars'],
     ];
@@ -86,4 +82,5 @@ class DisqusRecentCommentBlock extends DisqusBaseBlock {
   public function functionId() {
     return 'recent_comments_widget';
   }
+
 }

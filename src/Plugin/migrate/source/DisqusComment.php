@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\disqus\Plugin\migrate\source\DisqusComment.
- */
-
 namespace Drupal\disqus\Plugin\migrate\source;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -23,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "disqus_source"
  * )
  */
-class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginInterface{
+class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginInterface {
 
   /**
    * Iterator.
@@ -68,7 +63,7 @@ class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginIn
    *   A logger instance.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
-   * @param \Drupal\Core\Entity\Query\QueryFactory
+   * @param \Drupal\Core\Entity\Query\QueryFactory $entity_query
    *   The entity query factory.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, LoggerInterface $logger, ConfigFactoryInterface $config_factory, QueryFactory $entity_query) {
@@ -129,7 +124,7 @@ class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginIn
     $row->setSourceProperty('uid', 0);
     $email = $row->getSourceProperty('email');
     $user = $this->entityQuery->get('user')->condition('mail', $email)->execute();
-    if($user) {
+    if ($user) {
       $row->setSourceProperty('uid', key($user));
     }
     return parent::prepareRow($row);
@@ -176,5 +171,5 @@ class DisqusComment extends SourcePluginBase implements ContainerFactoryPluginIn
     }
     return new \ArrayIterator($items);
   }
-}
 
+}
