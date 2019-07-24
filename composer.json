@@ -5,7 +5,6 @@
     "homepage": "http://drupal.org/project/disqus",
     "license": "GPL-2.0-or-later",
     "require": {
-        "jakubzapletal/disqus-php": "dev-master#631c575f703f2e0dcd1f5bdccc099b96396f9a0c"
-    },
-    "minimum-stability": "dev"
+        "disqus/disqus-php": "^1.0"
+    }
 }
