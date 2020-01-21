@@ -134,7 +134,7 @@ abstract class DisqusBaseBlock extends BlockBase implements ContainerFactoryPlug
   public function build() {
     $function = $this->functionId();
     $url = Url::fromUri(
-      "http://disqus.com/forums/{$this->disqusConfig->get('disqus_domain')}/$function.js",
+      "//disqus.com/forums/{$this->disqusConfig->get('disqus_domain')}/$function.js",
       [
         'external' => TRUE,
         'query' => $this->buildQuery(),
