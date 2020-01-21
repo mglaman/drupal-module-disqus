@@ -55,11 +55,20 @@ class DisqusWidget extends WidgetBase implements ContainerFactoryPluginInterface
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    // If no settings can be found, hide the Disqus field.
+    $default_value = FALSE;
+
+    // Fetch the default value from the field definition. If none can be found,
+    // assume the field is hidden by default.
+    if (!empty($items->getFieldDefinition()->get('default_value')[0]['status'])) {
+      $default_value = $items->getFieldDefinition()->get('default_value')[0]['status'];
+    }
+
     $element['status'] = [
       '#type' => 'checkbox',
       '#title' => t('Disqus Comments'),
       '#description' => t('Users can post comments using <a href=":disqus">Disqus</a>.', [':disqus' => 'http://disqus.com']),
-      '#default_value' => isset($items->status) ? $items->status : TRUE,
+      '#default_value' => $items->status ?? $default_value,
       '#access' => $this->currentUser->hasPermission('toggle disqus comments'),
     ];
 
