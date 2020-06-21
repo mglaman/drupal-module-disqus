@@ -1,5 +1,6 @@
 name: 'Disqus'
 type: module
+core_version_requirement: ^8 || ^9
 description: 'Uses the Disqus web service to enhance comments.'
 core: 8.x
 configure: disqus.settings

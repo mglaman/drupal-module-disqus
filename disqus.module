@@ -81,7 +81,7 @@ function disqus_node_links_alter(array &$node_links, NodeInterface $node, array 
           // Display the Disqus link.
           $links['disqus_comments_num'] = array(
             'title' => t('Comments'),
-            'url' => $node->urlInfo(),
+            'url' => $node->toUrl(),
             'fragment' => 'disqus_thread',
             'attributes' => array(
               // Identify the node for Disqus with the unique identifier:

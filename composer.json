@@ -5,6 +5,7 @@
     "homepage": "http://drupal.org/project/disqus",
     "license": "GPL-2.0-or-later",
     "require": {
+        "drupal/core": "^8.8 || ^9",
         "disqus/disqus-php": "^1.0"
     }
 }
