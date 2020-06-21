@@ -80,7 +80,7 @@ class Disqus extends RenderElement {
     $account = \Drupal::currentUser();
     if ($disqus_settings->get('behavior.disqus_inherit_login') && !$account->isAnonymous()) {
       $renderer->addCacheableDependency($element, $account);
-      $disqus['name'] = $account->getUsername();
+      $disqus['name'] = $account->getAccountName();
       $disqus['email'] = $account->getEmail();
     }
 
