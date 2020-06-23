@@ -94,7 +94,7 @@ class DisqusCommentCount extends FieldPluginBase {
       // Build a renderable array for the link.
       $links['disqus_comments_num'] = array(
         'title' => t('Comments'),
-        'url' => $entity->urlInfo(),
+        'url' => $entity->toUrl(),
         'fragment' => 'disqus_thread',
         'attributes' => array(
           // Identify the node for Disqus with the unique identifier:
